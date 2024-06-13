@@ -6,6 +6,7 @@ using MediatR;
 
 namespace ContactBook.Application.Authentication.Queries;
 
+// Handler dla zapytania LoginQuery
 public class LoginQueryHandler : IRequestHandler<LoginQuery, ErrorOr<AuthenticationResult>>
 {
     private readonly IUserRepository _userRepository;
@@ -23,10 +24,16 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, ErrorOr<Authenticat
     {
         var user = await _userRepository.GetByEmailAsync(query.Email);
 
+        // Sprawdza, czy u¿ytkownik istnieje
         if (user is null || !user.IsCorrectPasswordHash(query.Password, _passwordHasher))
         {
+            // Zwraca b³¹d nieprawid³owych danych logowania, jeœli u¿ytkownik nie istnieje lub has³o jest niepoprawne
             return AuthenticationErrors.InvalidCredentials;
         }
-        return new AuthenticationResult(user, _jwtTokenGenerator.GenerateToken(user));
+
+        //Generuje token JWT
+        var token = _jwtTokenGenerator.GenerateToken(user);
+
+        return new AuthenticationResult(user, token);
     }
 }

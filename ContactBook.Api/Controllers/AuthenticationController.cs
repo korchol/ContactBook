@@ -20,21 +20,25 @@ public class AuthenticationController : ApiController
         _mediator = mediator;
     }
 
+    //Tworzenie nowego u¿ytkownika
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterRequest request)
     {
         var command = new RegisterCommand(request.Email, request.Password);
-        ErrorOr<AuthenticationResult> authResult = await _mediator.Send(command);
+
+        var authResult = await _mediator.Send(command);
 
         return authResult.Match(
             authResult => StatusCode(201, new { message = "User registered successfully." }),
             Problem);
     }
 
+    //Logowanie u¿ytkownika i zwracanie tokenu JWT (lub niepowodzenia)
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginRequest request)
     {
         var query = new LoginQuery(request.Email, request.Password);
+
         var authResult = await _mediator.Send(query);
 
         if (authResult.IsError && authResult.FirstError == AuthenticationErrors.InvalidCredentials)

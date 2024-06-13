@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace ContactBook.Application.Contacts.Commands.CreateContact;
 
+//Klasa oparta na FluentValidation, zawiera zasady walidacji które muszą zostać spełnione zanim zostanie uruchomiona logika handlera
 public class CreateContactCommandValidator : AbstractValidator<CreateContactCommand>
 {
     private const string pwRegex = @"^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,16}$";

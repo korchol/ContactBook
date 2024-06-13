@@ -17,13 +17,16 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
+        // Jeśli nie istnieje walidator danej komendy, pomija walidacje
         if (_validator is null)
         {
             return await next();
         }
 
+        // waliduje i zwraca wynik walidacji
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
 
+        // walidacja przebiegła nieprawidłowo - konwertujemy domyślne błędy walidacji na błędy z pakietu ErrorOr i zwracamy
         if (!validationResult.IsValid)
         {
             var errors = validationResult.Errors
@@ -32,6 +35,7 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
             return (dynamic)errors;
         }
 
+        //przechodzimy dalej w strumieniu zachowań (w naszym przypadku mamy tylko walidator i handler więc do handlera)
         return await next();
     }
 }

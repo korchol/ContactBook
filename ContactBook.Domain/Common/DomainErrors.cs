@@ -2,15 +2,17 @@
 
 namespace ContactBook.Domain.Common;
 
+//definiuje errory wg pakieru ErrorOr używanego w systemie
+//poszczególne metody zwracają poszczególne błędy
 public static class DomainErrors
 {
     public static class Contact
     {
-        public static Error ContactNotFound(Guid userId)
+        public static Error NotFound(Guid contactId)
         {
             return Error.NotFound(
             code: "NotFound",
-            description: $"Id '{userId}' does not exist.");
+            description: $"Contact with '{contactId}' Id does not exist.");
         }
         public static Error EmailAlreadyExists(string email)
         {

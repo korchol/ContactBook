@@ -14,18 +14,22 @@ namespace ContactBook.Api.Controllers;
 [Route("[controller]")]
 public class ContactsController : ApiController
 {
+    //IMediator posłuży do wysłania komend oraz zapytań i uruchomienia odpowiadającej logiki w warstwie aplikacji
     private readonly IMediator _mediator;
     public ContactsController(IMediator mediator)
     {
         _mediator = mediator;
     }
 
+    //Tworzenie nowego kontaktu, kolejne kontrolery działają na tej samej zasadzie
     [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateContact(CreateContactRequest request)
     {
-        var subcategory = request.Subcategory ?? string.Empty;
+        //Warstwa aplikacji nie przyjmuje null więc konwersja
+        string subcategory = request.Subcategory ?? string.Empty;
 
+        //Enkapsulacja szczegółów zapytania do komendy CreateContactCommand
         var command = new CreateContactCommand(
             request.Category,
             subcategory,
@@ -36,8 +40,11 @@ public class ContactsController : ApiController
             request.Phone,
             request.Birthday);
 
+        //Przekazanie komendy do Mediatora, ten uruchamia odpowiednia logikę i zwraca zdefiniowany wynik ErrorOr<ContactDto>
         var createContactResult = await _mediator.Send(command);
 
+        //gdy createContactResult posiada Success => pakujemy wartość ErrorOr w ActionResult i zwracamy
+        //gdy createContactResult posiada Problem => pakujemy błąd ErrorOr w Problem zdefiniowany w klasie macierzystej i zwracamy
         return createContactResult.MatchFirst(
             contact => Ok(new ContactDetailedResponse(
                 contact.Id,
@@ -52,6 +59,7 @@ public class ContactsController : ApiController
             Problem);
     }
 
+    //Aktualizacja istniejącego kontaktu
     [Authorize]
     [HttpPut("{contactId:guid}")]
     public async Task<IActionResult> UpdateContact(Guid contactId, UpdateContactRequest request)
@@ -85,6 +93,7 @@ public class ContactsController : ApiController
             Problem);
     }
 
+    //Zwrócenie istniejącego kontaktu
     [HttpGet("{contactId:guid}")]
     public async Task<IActionResult> GetContact(Guid contactId)
     {
@@ -106,6 +115,7 @@ public class ContactsController : ApiController
             Problem);
     }
 
+    //Usunięcie istniejącego kontaktu
     [Authorize]
     [HttpDelete("{contactId:guid}")]
     public async Task<IActionResult> DeleteContact(Guid contactId)
@@ -115,10 +125,11 @@ public class ContactsController : ApiController
         var deleteContactResult = await _mediator.Send(command);
 
         return deleteContactResult.Match(
-            _ => Ok(),
+            _ => StatusCode(200, new { message = "Contact deleted successfully." }),
             Problem);
     }
 
+    //Zwrócenie listy istniejących kontaktów
     [HttpGet]
     public async Task<IActionResult> ListContacts()
     {

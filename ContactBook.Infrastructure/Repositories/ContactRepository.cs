@@ -5,9 +5,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ContactBook.Infrastructure.Repositories;
 
+//implementacja intefejsu repozytoria ContactRepository, odpowiada za kontact z bazą
 public class ContactRepository : IContactRepository
 {
     private readonly ContactBookDbContext _dbContext;
+
+    public ContactRepository(ContactBookDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
 
     public async Task AddContactAsync(Contact contact)
     {
@@ -27,7 +33,7 @@ public class ContactRepository : IContactRepository
 
     public async Task<List<Contact>?> ListContactsAsync()
     {
-        var contacts = await _dbContext.Contacts.ToListAsync();
+        var contacts = await _dbContext.Contacts.Include(c => c.CategorySet).ToListAsync();
         return contacts;
     }
 

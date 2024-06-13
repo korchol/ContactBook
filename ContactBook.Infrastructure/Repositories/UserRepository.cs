@@ -4,6 +4,7 @@ using ContactBook.Infrastructure.Common;
 using Microsoft.EntityFrameworkCore;
 namespace GymManagement.Infrastructure.Users;
 
+//implementacja intefejsu repozytoria UserRepository, odpowiada za kontact z bazą
 public class UserRepository : IUserRepository
 {
     private readonly ContactBookDbContext _dbContext;

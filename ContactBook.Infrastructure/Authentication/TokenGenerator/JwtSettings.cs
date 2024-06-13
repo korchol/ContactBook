@@ -1,5 +1,6 @@
 namespace ContactBook.Infrastructure.Authentication.TokenGenerator;
 
+//klasa u¿ywana do wstrzykniêcia wartoœci do JwtTokenGenerator z pliku konfiguracyjnego
 public class JwtSettings
 {
     public const string Section = "JwtSettings";

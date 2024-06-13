@@ -18,13 +18,15 @@ public class ListContactsQueryHandler : IRequestHandler<ListContactsQuery, Error
 
     public async Task<ErrorOr<List<ContactDto>>> Handle(ListContactsQuery request, CancellationToken cancellationToken)
     {
+        //pobiera wszystkie kontakty z bazy
         var contacts = await _contactRepository.ListContactsAsync();
-
         if (contacts is null)
         {
+            //jeżeli brak, error
             return Error.NotFound(description: "No contacts found.");
         }
 
+        //mapuje, zwraca do prezentacji
         var contactDtos = _mapper.Map<List<ContactDto>>(contacts);
         return contactDtos;
     }

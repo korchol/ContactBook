@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ContactBook.Infrastructure.Repositories;
 
+//implementacja intefejsu repozytoria CategorySetRepo, odpowiada za kontact z bazą
 public class CategorySetRepository : ICategorySetRepository
 {
     private readonly ContactBookDbContext _dbContext;

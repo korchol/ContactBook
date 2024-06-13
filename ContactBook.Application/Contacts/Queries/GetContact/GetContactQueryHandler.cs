@@ -21,14 +21,17 @@ public class GetContactQueryHandler : IRequestHandler<GetContactQuery, ErrorOr<C
 
     public async Task<ErrorOr<ContactDto>> Handle(GetContactQuery query, CancellationToken cancellationToken)
     {
+        //sprawdza czy kontakt istnieje
         var contact = await _contactRepository.GetByIdAsync(query.ContactId);
         if (contact is null)
         {
             return Error.NotFound(description: "Contact not found");
         }
 
+        //pobiera też zestaw kategorii aby umożliwić mapperowi konwersję do nazw kategorii
         var categorySet = await _categorySetRepository.GetByIdAsync(contact.CategorySetId);
 
+        //konwertuje do ładnego obiektu i zwraca do prezentacji
         var contactDto = _mapper.Map<ContactDto>(contact);
         return contactDto;
     }

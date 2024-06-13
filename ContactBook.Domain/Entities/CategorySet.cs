@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ContactBook.Domain.Entities;
 
+//prosta klasa domenowa CategorySet, przechowuje kategorię i podkategorię, sprawdza czy utworzenie zestawu jest możliwe
 public class CategorySet
 {
     [Key]
@@ -17,10 +18,10 @@ public class CategorySet
         Subcategory = subcategory;
     }
 
-    //Użytkownik może stworzyć nowy zestaw kategorii TYLKO w przypadku kategorii głównej Custom.
+    //Użytkownik może stworzyć nowy zestaw kategorii TYLKO w przypadku kategorii głównej Custom
     public static ErrorOr<CategorySet> CreateCustomCategorySet(string category, string subcategory)
     {
-        if (category == null || subcategory == null || category != "Custom")
+        if (category == null || subcategory == null || category.ToLower() != "custom")
         {
             return DomainErrors.CategorySet.InvalidCategorySet(category, subcategory);
         }

@@ -1,5 +1,6 @@
 ﻿namespace ContactBook.Application.Common.Dto;
 
+//Definicja DTO który będziemy zwracać do warstwy prezentacji, nie chcemy Id kategorii, chcemy kategorie i podkategorię jako string
 public class ContactDto
 {
     public Guid Id { get; set; }

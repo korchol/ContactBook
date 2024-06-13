@@ -2,6 +2,7 @@
 
 namespace ContactBook.Domain.Entities;
 
+//prosta klasa domenowa contact, zawiera właściwości i kontaktu oraz referuje do klasy CategorySet
 public class Contact
 {
     public Guid Id { get; private set; }
@@ -34,6 +35,7 @@ public class Contact
         Birthday = birthday;
     }
 
+    //kreator obiektu, zazwyczaj posiada dodatkową logikę, walidację, utworzenie eventu itd.
     public static ErrorOr<Contact> Create(
         Guid categorySetId,
         string firstName,
@@ -48,6 +50,7 @@ public class Contact
         return contact;
     }
 
+    //metoda aktualizuje obiekt
     public ErrorOr<Success> UpdateDetails(
         Guid categorySetId,
         string firstName,

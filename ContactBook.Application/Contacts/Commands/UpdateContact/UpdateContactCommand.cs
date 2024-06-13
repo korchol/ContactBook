@@ -4,6 +4,7 @@ using MediatR;
 
 namespace ContactBook.Application.Contacts.Commands.UpdateContact;
 
+//Definicja parametrów oraz rezultatu komendy "UpdateContactCommand"
 public record UpdateContactCommand(
     Guid Id,
     string Category,

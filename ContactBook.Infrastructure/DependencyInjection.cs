@@ -18,16 +18,22 @@ namespace ContactBook.Infrastructure;
 
 public static class DependencyInjection
 {
+    //metoda dodająca zależności do kontenera DI
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        //konfiguracja bazy danych
         services.AddDbContext<ContactBookDbContext>(options =>
             options.UseSqlServer("Data Source=LAPTOP-O83OGQKR\\SQLEXPRESS;Initial Catalog=ContactBookDb;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False"));
 
+        //rejestracja repozytoriów
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IContactRepository, ContactRepository>();
         services.AddScoped<ICategorySetRepository, CategorySetRepository>();
+
+        // rejestracja IUnitOfWork
         services.AddScoped<IUnitOfWork>(serviceProvider => serviceProvider.GetRequiredService<ContactBookDbContext>());
 
+        //konfiguracja ustawień JWT
         var jwtSettings = new JwtSettings();
         configuration.Bind(JwtSettings.Section, jwtSettings);
 
@@ -35,6 +41,7 @@ public static class DependencyInjection
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
+        //konfiguracja uwierzytelniania
         services.AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
             {
@@ -48,6 +55,7 @@ public static class DependencyInjection
                     Encoding.UTF8.GetBytes(jwtSettings.Secret)),
             });
 
+        //zwraca kolekcje usług używaną w warstwie api
         return services;
     }
 }

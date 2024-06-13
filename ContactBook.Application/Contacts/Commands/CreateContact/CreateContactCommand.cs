@@ -4,6 +4,7 @@ using MediatR;
 
 namespace ContactBook.Application.Contacts.Commands.CreateContact;
 
+//Definicja parametrów oraz rezultatu komendy "CreateContactCommand"
 public record CreateContactCommand(
     string Category,
     string Subcategory,
